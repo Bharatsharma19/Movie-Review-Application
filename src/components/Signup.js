@@ -41,6 +41,7 @@ const Signup = () => {
 
   const requestOtp = () => {
     setLoading(true);
+    
     generateRecaptha();
 
     let appVerifier = window.recaptchaVerifier;

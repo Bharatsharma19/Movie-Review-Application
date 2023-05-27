@@ -6,10 +6,13 @@ import { usersRef } from "../firebase/firebase";
 import { Appstate } from "../App";
 import bcrypt from "bcryptjs";
 import Swal from "sweetalert2";
+import CryptoJS from "crypto-js";
 
 const Login = () => {
   const navigate = useNavigate();
   const useAppstate = useContext(Appstate);
+
+  const secretKey = process.env.REACT_APP_SECRET_KEY;
 
   const [form, setForm] = useState({
     mobile: "",
@@ -26,35 +29,52 @@ const Login = () => {
 
       const querySnapshot = await getDocs(quer);
 
-      querySnapshot.forEach((doc) => {
-        const _data = doc.data();
+      if (querySnapshot.empty) {
+        navigate("/signup");
 
-        const isUser = bcrypt.compareSync(form.password, _data.password);
+        Swal.fire({
+          position: "center",
+          title: "Account not Exists!\nSign-Up to Continue",
+          icon: "error",
+          timer: 4000,
+        });
+      } else {
+        querySnapshot.forEach((doc) => {
+          const _data = doc.data();
 
-        if (isUser) {
-          useAppstate.setLogin(true);
+          const isUser = bcrypt.compareSync(form.password, _data.password);
 
-          localStorage.setItem("User", _data.name);
+          if (isUser) {
+            var encryptedUser = CryptoJS.AES.encrypt(
+              `${_data.name}`,
+              secretKey
+            ).toString();
 
-          useAppstate.setUserName(_data.name);
+            useAppstate.setLogin(true);
 
-          Swal.fire({
-            position: "center",
-            title: "Logged In",
-            icon: "success",
-            timer: 2000,
-          });
+            localStorage.setItem("User", _data.name);
+            localStorage.setItem("EUser", encryptedUser);
 
-          navigate("/");
-        } else {
-          Swal.fire({
-            position: "center",
-            title: "Invalid Credentials",
-            icon: "error",
-            timer: 4000,
-          });
-        }
-      });
+            useAppstate.setUserName(_data.name);
+
+            Swal.fire({
+              position: "center",
+              title: "Logged In",
+              icon: "success",
+              timer: 2000,
+            });
+
+            navigate("/");
+          } else {
+            Swal.fire({
+              position: "center",
+              title: "Invalid Credentials",
+              icon: "error",
+              timer: 4000,
+            });
+          }
+        });
+      }
     } catch (error) {
       Swal.fire({
         position: "center",

@@ -6,21 +6,34 @@ import Detail from "./components/Detail";
 import { createContext, useEffect, useState } from "react";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import CryptoJS from "crypto-js";
 
 const Appstate = createContext();
 
 function App() {
-  var User = localStorage.getItem("User");
-
-  useEffect(() => {
-    if (User !== null) {
-      setLogin(true);
-      setUserName(User);
-    }
-  }, [User]);
-
   const [login, setLogin] = useState(false);
   const [userName, setUserName] = useState("");
+
+  const secretKey = process.env.REACT_APP_SECRET_KEY;
+
+  var User = localStorage.getItem("User");
+  var EUser = localStorage.getItem("EUser");
+  var DUser;
+
+  useEffect(() => {
+    if (EUser !== null && User !== null) {
+      var decryptedUser = CryptoJS.AES.decrypt(EUser, secretKey);
+      DUser = decryptedUser.toString(CryptoJS.enc.Utf8);
+    }
+
+    if (DUser === User) {
+      setLogin(true);
+      setUserName(DUser);
+    } else {
+      localStorage.clear();
+      setLogin(false);
+    }
+  }, [User]);
 
   return (
     <Appstate.Provider value={{ login, userName, setLogin, setUserName }}>
