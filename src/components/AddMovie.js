@@ -50,7 +50,7 @@ const AddMovie = () => {
           form.image === "" ||
           form.description.length <= 16 ||
           form.title.length >= 64 ||
-          form.year.length === 4
+          form.year.length !== 4
         ) {
           Swal.fire({
             position: "center",
