@@ -3,13 +3,22 @@ import Cards from "./components/Cards";
 import AddMovie from "./components/AddMovie";
 import { Route, Routes } from "react-router-dom";
 import Detail from "./components/Detail";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 
 const Appstate = createContext();
 
 function App() {
+  var User = localStorage.getItem("User");
+
+  useEffect(() => {
+    if (User !== null) {
+      setLogin(true);
+      setUserName(User);
+    }
+  }, [User]);
+
   const [login, setLogin] = useState(false);
   const [userName, setUserName] = useState("");
 

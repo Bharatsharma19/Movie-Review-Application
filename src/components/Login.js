@@ -28,10 +28,13 @@ const Login = () => {
 
       querySnapshot.forEach((doc) => {
         const _data = doc.data();
+
         const isUser = bcrypt.compareSync(form.password, _data.password);
 
         if (isUser) {
           useAppstate.setLogin(true);
+
+          localStorage.setItem("User", _data.name);
 
           useAppstate.setUserName(_data.name);
 

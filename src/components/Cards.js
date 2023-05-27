@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import ReactStars from "react-stars";
-import { getDocs } from "firebase/firestore";
+import { getDocs, orderBy, query } from "firebase/firestore";
 import { moviesRef } from "../firebase/firebase";
 import { Link } from "react-router-dom";
 
@@ -13,7 +13,10 @@ const Cards = () => {
     async function getData() {
       setLoading(true);
 
-      const _data = await getDocs(moviesRef);
+      const q = query(moviesRef, orderBy("title"));
+
+      const _data = await getDocs(q);
+      
       _data.forEach((doc) => {
         setData((prv) => [...prv, { ...doc.data(), id: doc.id }]);
       });
@@ -24,7 +27,7 @@ const Cards = () => {
   }, []);
 
   return (
-    <div className="flex flex-wrap justify-between px-3 mt-2">
+    <div className="flex flex-wrap justify-center items-center px-4 mt-2">
       {loading ? (
         <div className="w-full flex justify-center items-center h-96">
           <ThreeDots height={40} color="white" />
@@ -38,7 +41,7 @@ const Cards = () => {
                 className="card font-medium shadow-lg p-4 hover:-translate-y-3 cursor-pointer mt-6 transition-all duration-500"
               >
                 <img
-                  className="h-60 w-56 md:h-72 md:w-40"
+                  className="h-60 w-56 md:h-72"
                   src={e.image}
                   alt={e.image}
                 />
