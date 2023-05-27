@@ -11,5 +11,64 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script language="JavaScript">
+      /*
+      var message = "Function Disabled";
+
+      function rtclickcheck(keyp) {
+        if (navigator.appName == "Netscape" && keyp.which == 3) {
+          alert("No Need For That!!!");
+          return false;
+        }
+        if (navigator.appVersion.indexOf("MSIE") != -1 && event.button == 2) {
+          alert(message);
+          return false;
+        }
+      }
+      document.onmousedown = rtclickcheck;
+      */
+
+      document.addEventListener(
+        "keydown",
+        function () {
+          if (event.keyCode == 123) {
+            alert("No Need For That!!!");
+            return false;
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+            alert("No Need For That!!!");
+            event.preventDefault();
+            return false;
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
+            alert("No Need For That!!!");
+            event.preventDefault();
+            return false;
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 67) {
+            alert("No Need For That!!!");
+            event.preventDefault();
+            return false;
+          } else if (event.ctrlKey && event.keyCode == 85) {
+            alert("No Need For That!!!");
+            return false;
+          }
+        },
+        false
+      );
+
+      if (document.addEventListener) {
+        document.addEventListener(
+          "contextmenu",
+          function (e) {
+            alert("No Need For That!!!");
+            e.preventDefault();
+          },
+          false
+        );
+      } else {
+        document.attachEvent("oncontextmenu", function () {
+          alert("No Need For That!!!");
+          window.event.returnValue = false;
+        });
+      }
+    </script>
   </body>
 </html>
