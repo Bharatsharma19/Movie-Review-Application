@@ -23,6 +23,7 @@ function App() {
   useEffect(() => {
     if (EUser !== null && User !== null) {
       var decryptedUser = CryptoJS.AES.decrypt(EUser, secretKey);
+      // eslint-disable-next-line
       DUser = decryptedUser.toString(CryptoJS.enc.Utf8);
     }
 

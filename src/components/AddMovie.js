@@ -25,7 +25,8 @@ const AddMovie = () => {
 
       navigate("/login");
     }
-  }, [{ User, EUser }]);
+    // eslint-disable-next-line
+  }, [User]);
 
   const [form, setForm] = useState({
     title: "",
