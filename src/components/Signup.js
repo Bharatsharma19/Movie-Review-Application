@@ -46,11 +46,7 @@ const Signup = () => {
 
     let appVerifier = window.recaptchaVerifier;
 
-    if (
-      form.mobile.length !== 10 ||
-      form.password.length <= 6 ||
-      form.name.length <= 3
-    ) {
+    if (form.mobile.length !== 10 || form.name.length <= 3) {
       Swal.fire({
         position: "center",
         title: "Please Fill Correct Values",

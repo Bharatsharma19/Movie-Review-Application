@@ -29,32 +29,42 @@ const Reviews = ({ id, prevRating, userRated }) => {
     setLoading(true);
     try {
       if (useAppstate.login) {
-        await addDoc(reviewsRef, {
-          movieid: id,
-          name: useAppstate.userName,
-          rating: rating,
-          thought: form,
-          timestamp: new Date().getTime(),
-        });
+        if (rating === 0 || rating <= 0) {
+          Swal.fire({
+            position: "center",
+            title: "Please select the rating for Movie",
+            icon: "error",
+            timer: 4000,
+          });
+        } else {
+          await addDoc(reviewsRef, {
+            movieid: id,
+            name: useAppstate.userName,
+            rating: rating,
+            thought: form,
+            timestamp: new Date().getTime(),
+          });
 
-        const ref = doc(db, "movies", id);
-        await updateDoc(ref, {
-          rating: prevRating + rating,
-          rated: userRated + 1,
-        });
+          const ref = doc(db, "movies", id);
 
-        setRating(0);
+          await updateDoc(ref, {
+            rating: prevRating + rating,
+            rated: userRated + 1,
+          });
 
-        setForm("");
+          setRating(0);
 
-        setNewAdded(newAdded + 1);
+          setForm("");
 
-        Swal.fire({
-          position: "center",
-          title: "Review Sent",
-          icon: "success",
-          timer: 2000,
-        });
+          setNewAdded(newAdded + 1);
+
+          Swal.fire({
+            position: "center",
+            title: "Review Sent",
+            icon: "success",
+            timer: 2000,
+          });
+        }
       } else {
         navigate("/login");
       }
@@ -73,6 +83,7 @@ const Reviews = ({ id, prevRating, userRated }) => {
     async function getData() {
       setReviewsLoading(true);
       setData([]);
+
       let quer = query(reviewsRef, where("movieid", "==", id));
       const querySnapshot = await getDocs(quer);
 
