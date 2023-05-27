@@ -35,10 +35,10 @@ const Cards = () => {
             <Link key={i} to={`/detail/${e.id}`}>
               <div
                 key={i}
-                className="card font-medium shadow-lg p-2 hover:-translate-y-3 cursor-pointer mt-6 transition-all duration-500"
+                className="card font-medium shadow-lg p-4 hover:-translate-y-3 cursor-pointer mt-6 transition-all duration-500"
               >
                 <img
-                  className="h-60 w-56 md:h-72 md:w-44"
+                  className="h-60 w-56 md:h-72 md:w-40"
                   src={e.image}
                   alt={e.image}
                 />
