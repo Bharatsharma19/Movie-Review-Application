@@ -10,7 +10,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { TailSpin, ThreeDots } from "react-loader-spinner";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { Appstate } from "../App";
 import { useNavigate } from "react-router-dom";
 
@@ -44,23 +44,26 @@ const Reviews = ({ id, prevRating, userRated }) => {
         });
 
         setRating(0);
+
         setForm("");
+
         setNewAdded(newAdded + 1);
-        swal({
+
+        Swal.fire({
+          position: "center",
           title: "Review Sent",
           icon: "success",
-          buttons: false,
-          timer: 3000,
+          timer: 2000,
         });
       } else {
         navigate("/login");
       }
     } catch (error) {
-      swal({
+      Swal.fire({
+        position: "center",
         title: error.message,
         icon: "error",
-        buttons: false,
-        timer: 3000,
+        timer: 4000,
       });
     }
     setLoading(false);

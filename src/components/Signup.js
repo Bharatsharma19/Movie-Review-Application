@@ -7,7 +7,7 @@ import {
   signInWithPhoneNumber,
 } from "firebase/auth";
 import app from "../firebase/firebase";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 import { addDoc } from "firebase/firestore";
 import { usersRef } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
@@ -48,17 +48,24 @@ const Signup = () => {
     signInWithPhoneNumber(auth, `+91${form.mobile}`, appVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
-        swal({
+        Swal.fire({
+          position: "center",
           text: "OTP Sent",
           icon: "success",
-          buttons: false,
-          timer: 3000,
+          timer: 2000,
         });
         setOtpSent(true);
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+
+        Swal.fire({
+          position: "center",
+          text: "Server Error, Please try Again!",
+          icon: "error",
+          timer: 6000,
+        });
       });
   };
 
@@ -67,23 +74,31 @@ const Signup = () => {
       setLoading(true);
       window.confirmationResult.confirm(OTP).then((result) => {
         uploadData();
-        swal({
+        Swal.fire({
+          position: "center",
           text: "Sucessfully Registered",
           icon: "success",
-          buttons: false,
-          timer: 3000,
+          timer: 2500,
         });
         navigate("/login");
         setLoading(false);
       });
     } catch (error) {
       console.log(error);
+
+      Swal.fire({
+        position: "center",
+        text: "Server Error, Please try Again!",
+        icon: "error",
+        timer: 6000,
+      });
     }
   };
 
   const uploadData = async () => {
     try {
       const salt = bcrypt.genSaltSync(10);
+
       var hash = bcrypt.hashSync(form.password, salt);
 
       await addDoc(usersRef, {
@@ -93,6 +108,13 @@ const Signup = () => {
       });
     } catch (err) {
       console.log(err);
+
+      Swal.fire({
+        position: "center",
+        text: "Server Error, Please try Again!",
+        icon: "error",
+        timer: 6000,
+      });
     }
   };
 
@@ -101,9 +123,12 @@ const Signup = () => {
       <h1 className="text-xl font-bold">Sign up</h1>
       {otpSent ? (
         <>
-          <div class="p-2 w-full md:w-1/3">
-            <div class="relative">
-              <label for="message" class="leading-7 text-sm text-gray-300">
+          <div className="p-2 w-full md:w-1/3">
+            <div className="relative">
+              <label
+                htmlFor="message"
+                className="leading-7 text-sm text-gray-300"
+              >
                 OTP
               </label>
               <input
@@ -111,14 +136,14 @@ const Signup = () => {
                 name="message"
                 value={OTP}
                 onChange={(e) => setOTP(e.target.value)}
-                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
             </div>
           </div>
-          <div class="p-2 w-full">
+          <div className="p-2 w-full">
             <button
               onClick={verifyOTP}
-              class="flex mx-auto text-white bg-green-600 border-0 py-2 px-8 focus:outline-none hover:bg-green-700 rounded text-lg"
+              className="flex mx-auto text-white bg-green-600 border-0 py-2 px-8 focus:outline-none hover:bg-green-700 rounded text-lg"
             >
               {loading ? <TailSpin height={25} color="white" /> : "Confirm OTP"}
             </button>
@@ -126,9 +151,12 @@ const Signup = () => {
         </>
       ) : (
         <>
-          <div class="p-2 w-full md:w-1/3">
-            <div class="relative">
-              <label for="message" class="leading-7 text-sm text-gray-300">
+          <div className="p-2 w-full md:w-1/3">
+            <div className="relative">
+              <label
+                htmlFor="message"
+                className="leading-7 text-sm text-gray-300"
+              >
                 Name
               </label>
               <input
@@ -136,13 +164,16 @@ const Signup = () => {
                 name="message"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
             </div>
           </div>
-          <div class="p-2 w-full md:w-1/3">
-            <div class="relative">
-              <label for="message" class="leading-7 text-sm text-gray-300">
+          <div className="p-2 w-full md:w-1/3">
+            <div className="relative">
+              <label
+                htmlFor="message"
+                className="leading-7 text-sm text-gray-300"
+              >
                 Mobile No.
               </label>
               <input
@@ -151,13 +182,16 @@ const Signup = () => {
                 name="message"
                 value={form.mobile}
                 onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
             </div>
           </div>
-          <div class="p-2 w-full md:w-1/3">
-            <div class="relative">
-              <label for="message" class="leading-7 text-sm text-gray-300">
+          <div className="p-2 w-full md:w-1/3">
+            <div className="relative">
+              <label
+                htmlFor="message"
+                className="leading-7 text-sm text-gray-300"
+              >
                 Password
               </label>
               <input
@@ -166,14 +200,14 @@ const Signup = () => {
                 name="message"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
             </div>
           </div>
-          <div class="p-2 w-full">
+          <div className="p-2 w-full">
             <button
               onClick={requestOtp}
-              class="flex mx-auto text-white bg-green-600 border-0 py-2 px-8 focus:outline-none hover:bg-green-700 rounded text-lg"
+              className="flex mx-auto text-white bg-green-600 border-0 py-2 px-8 focus:outline-none hover:bg-green-700 rounded text-lg"
             >
               {loading ? <TailSpin height={25} color="white" /> : "Request OTP"}
             </button>

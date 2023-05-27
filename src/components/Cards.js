@@ -12,10 +12,12 @@ const Cards = () => {
   useEffect(() => {
     async function getData() {
       setLoading(true);
+
       const _data = await getDocs(moviesRef);
       _data.forEach((doc) => {
         setData((prv) => [...prv, { ...doc.data(), id: doc.id }]);
       });
+
       setLoading(false);
     }
     getData();
@@ -30,7 +32,7 @@ const Cards = () => {
       ) : (
         data.map((e, i) => {
           return (
-            <Link to={`/detail/${e.id}`}>
+            <Link key={i} to={`/detail/${e.id}`}>
               <div
                 key={i}
                 className="card font-medium shadow-lg p-2 hover:-translate-y-3 cursor-pointer mt-6 transition-all duration-500"
