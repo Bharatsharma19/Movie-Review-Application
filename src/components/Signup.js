@@ -41,33 +41,47 @@ const Signup = () => {
 
   const requestOtp = () => {
     setLoading(true);
-    
+
     generateRecaptha();
 
     let appVerifier = window.recaptchaVerifier;
 
-    signInWithPhoneNumber(auth, `+91${form.mobile}`, appVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        Swal.fire({
-          position: "center",
-          text: "OTP Sent",
-          icon: "success",
-          timer: 2000,
-        });
-        setOtpSent(true);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-
-        Swal.fire({
-          position: "center",
-          text: "Server Error, Please try Again!",
-          icon: "error",
-          timer: 6000,
-        });
+    if (
+      form.mobile.length !== 10 ||
+      form.password.length <= 6 ||
+      form.name.length <= 3
+    ) {
+      Swal.fire({
+        position: "center",
+        title: "Please Fill Correct Values",
+        icon: "error",
+        timer: 4000,
       });
+    } else {
+      signInWithPhoneNumber(auth, `+91${form.mobile}`, appVerifier)
+        .then((confirmationResult) => {
+          window.confirmationResult = confirmationResult;
+          Swal.fire({
+            position: "center",
+            text: "OTP Sent",
+            icon: "success",
+            timer: 2000,
+          });
+          setOtpSent(true);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+
+          Swal.fire({
+            position: "center",
+            text: "Server Error, Please try Again!",
+            icon: "error",
+            timer: 6000,
+          });
+        });
+    }
+    setLoading(false);
   };
 
   const verifyOTP = () => {

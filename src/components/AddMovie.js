@@ -43,19 +43,38 @@ const AddMovie = () => {
     setLoading(true);
     try {
       if (useAppstate.login) {
-        await addDoc(moviesRef, form);
-        Swal.fire({
-          position: "center",
-          title: "Successfully Added",
-          icon: "success",
-          timer: 2000,
-        });
-        setForm({
-          title: "",
-          year: "",
-          description: "",
-          image: "",
-        });
+        if (
+          form.description === "" ||
+          form.title === "" ||
+          form.year === "" ||
+          form.image === "" ||
+          form.description.length <= 16 ||
+          form.title.length >= 24 ||
+          form.year.length === 4
+        ) {
+          Swal.fire({
+            position: "center",
+            title: "Please fill Correct Values",
+            icon: "error",
+            timer: 4000,
+          });
+        } else {
+          await addDoc(moviesRef, form);
+
+          Swal.fire({
+            position: "center",
+            title: "Successfully Added",
+            icon: "success",
+            timer: 2000,
+          });
+
+          setForm({
+            title: "",
+            year: "",
+            description: "",
+            image: "",
+          });
+        }
       } else {
         navigate("/login");
       }

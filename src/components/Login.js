@@ -25,55 +25,64 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const quer = query(usersRef, where("mobile", "==", form.mobile));
-
-      const querySnapshot = await getDocs(quer);
-
-      if (querySnapshot.empty) {
-        navigate("/signup");
-
+      if (form.mobile.length !== 10 || form.password === "") {
         Swal.fire({
           position: "center",
-          title: "Account not Exists!\nSign-Up to Continue",
+          title: "Please Fill Correct Values",
           icon: "error",
           timer: 4000,
         });
       } else {
-        querySnapshot.forEach((doc) => {
-          const _data = doc.data();
+        const quer = query(usersRef, where("mobile", "==", form.mobile));
 
-          const isUser = bcrypt.compareSync(form.password, _data.password);
+        const querySnapshot = await getDocs(quer);
 
-          if (isUser) {
-            var encryptedUser = CryptoJS.AES.encrypt(
-              `${_data.name}`,
-              secretKey
-            ).toString();
+        if (querySnapshot.empty) {
+          navigate("/signup");
 
-            useAppstate.setLogin(true);
+          Swal.fire({
+            position: "center",
+            title: "Account not Exists!\nSign-Up to Continue",
+            icon: "error",
+            timer: 4000,
+          });
+        } else {
+          querySnapshot.forEach((doc) => {
+            const _data = doc.data();
 
-            localStorage.setItem("User", _data.name);
-            localStorage.setItem("EUser", encryptedUser);
+            const isUser = bcrypt.compareSync(form.password, _data.password);
 
-            useAppstate.setUserName(_data.name);
+            if (isUser) {
+              var encryptedUser = CryptoJS.AES.encrypt(
+                `${_data.name}`,
+                secretKey
+              ).toString();
 
-            Swal.fire({
-              position: "center",
-              title: "Logged In",
-              icon: "success",
-              timer: 2000,
-            });
+              useAppstate.setLogin(true);
 
-            navigate("/");
-          } else {
-            Swal.fire({
-              position: "center",
-              title: "Invalid Credentials",
-              icon: "error",
-              timer: 4000,
-            });
-          }
-        });
+              localStorage.setItem("User", _data.name);
+              localStorage.setItem("EUser", encryptedUser);
+
+              useAppstate.setUserName(_data.name);
+
+              Swal.fire({
+                position: "center",
+                title: "Logged In",
+                icon: "success",
+                timer: 2000,
+              });
+
+              navigate("/");
+            } else {
+              Swal.fire({
+                position: "center",
+                title: "Invalid Credentials",
+                icon: "error",
+                timer: 4000,
+              });
+            }
+          });
+        }
       }
     } catch (error) {
       Swal.fire({
