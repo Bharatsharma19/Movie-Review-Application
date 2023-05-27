@@ -38,7 +38,7 @@ const Cards = () => {
                 className="card font-medium shadow-lg p-2 hover:-translate-y-3 cursor-pointer mt-6 transition-all duration-500"
               >
                 <img
-                  className="h-60 w-64 md:h-72"
+                  className="h-60 w-52 md:h-72"
                   src={e.image}
                   alt={e.image}
                 />
