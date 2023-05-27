@@ -25,7 +25,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      if (form.mobile.length <= 9 || form.password === "") {
+      if (form.mobile === "" || form.password === "") {
         Swal.fire({
           position: "center",
           title: "Please Fill Correct Values",
