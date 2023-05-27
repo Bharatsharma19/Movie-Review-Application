@@ -49,7 +49,7 @@ const AddMovie = () => {
           form.year === "" ||
           form.image === "" ||
           form.description.length <= 16 ||
-          form.title.length >= 24 ||
+          form.title.length >= 64 ||
           form.year.length === 4
         ) {
           Swal.fire({
