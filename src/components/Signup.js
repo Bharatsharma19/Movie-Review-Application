@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TailSpin } from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import {
@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import app from "../firebase/firebase";
 import Swal from "sweetalert2";
-import { addDoc } from "firebase/firestore";
+import { addDoc, getDocs, query, where } from "firebase/firestore";
 import { usersRef } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
@@ -25,6 +25,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [OTP, setOTP] = useState("");
+  const [isUser, setIsUser] = useState(false);
 
   const generateRecaptha = () => {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -39,43 +40,69 @@ const Signup = () => {
     );
   };
 
+  const isUserExists = async (mobile) => {
+    const quer = query(usersRef, where("mobile", "==", mobile));
+
+    const querySnapshot = await getDocs(quer);
+
+    if (querySnapshot.empty === false) {
+      setIsUser(true);
+    }
+  };
+  useEffect(() => {
+    isUserExists(form.mobile);
+  }, [form.mobile]);
+
   const requestOtp = () => {
     setLoading(true);
 
-    generateRecaptha();
+    console.log(isUser);
 
-    let appVerifier = window.recaptchaVerifier;
+    if (isUser === false) {
+      generateRecaptha();
 
-    if (form.mobile.length !== 10 || form.name.length <= 3) {
+      let appVerifier = window.recaptchaVerifier;
+
+      if (form.mobile.length !== 10 || form.name.length <= 3) {
+        Swal.fire({
+          position: "center",
+          title: "Please Fill Correct Values",
+          icon: "error",
+          timer: 4000,
+        });
+      } else {
+        signInWithPhoneNumber(auth, `+91${form.mobile}`, appVerifier)
+          .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+            Swal.fire({
+              position: "center",
+              text: "OTP Sent",
+              icon: "success",
+              timer: 2000,
+            });
+            setOtpSent(true);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+
+            Swal.fire({
+              position: "center",
+              text: "Server Error, Please try Again!",
+              icon: "error",
+              timer: 6000,
+            });
+          });
+      }
+    } else {
+      navigate("/login");
+
       Swal.fire({
         position: "center",
-        title: "Please Fill Correct Values",
+        title: "Account already Exists!\nLog-In to Continue",
         icon: "error",
         timer: 4000,
       });
-    } else {
-      signInWithPhoneNumber(auth, `+91${form.mobile}`, appVerifier)
-        .then((confirmationResult) => {
-          window.confirmationResult = confirmationResult;
-          Swal.fire({
-            position: "center",
-            text: "OTP Sent",
-            icon: "success",
-            timer: 2000,
-          });
-          setOtpSent(true);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-
-          Swal.fire({
-            position: "center",
-            text: "Server Error, Please try Again!",
-            icon: "error",
-            timer: 6000,
-          });
-        });
     }
     setLoading(false);
   };
