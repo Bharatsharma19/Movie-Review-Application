@@ -83,17 +83,44 @@ const Signup = () => {
   const verifyOTP = () => {
     try {
       setLoading(true);
-      window.confirmationResult.confirm(OTP).then((result) => {
-        uploadData();
+
+      if (OTP.length === 6) {
+        window.confirmationResult
+          .confirm(OTP)
+          .then((result) => {
+            uploadData();
+
+            Swal.fire({
+              position: "center",
+              text: "Sucessfully Registered",
+              icon: "success",
+              timer: 2500,
+            });
+
+            navigate("/login");
+
+            setLoading(false);
+          })
+          .catch((error) => {
+            Swal.fire({
+              position: "center",
+              text: "Invalid Otp!",
+              icon: "error",
+              timer: 2000,
+            });
+
+            setLoading(false);
+          });
+      } else {
         Swal.fire({
           position: "center",
-          text: "Sucessfully Registered",
-          icon: "success",
-          timer: 2500,
+          text: "Otp must be of 6 digits!",
+          icon: "error",
+          timer: 4000,
         });
-        navigate("/login");
+
         setLoading(false);
-      });
+      }
     } catch (error) {
       console.log(error);
 
@@ -143,6 +170,7 @@ const Signup = () => {
                 OTP
               </label>
               <input
+                maxLength={6}
                 id="message"
                 name="message"
                 value={OTP}
@@ -156,7 +184,7 @@ const Signup = () => {
               onClick={verifyOTP}
               className="flex mx-auto text-white bg-green-600 border-0 py-2 px-8 focus:outline-none hover:bg-green-700 rounded text-lg"
             >
-              {loading ? <TailSpin height={25} color="white" /> : "Confirm OTP"}
+              {loading ? <TailSpin height={25} color="white" /> : "Confirm Otp"}
             </button>
           </div>
         </>

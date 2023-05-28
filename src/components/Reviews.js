@@ -8,6 +8,7 @@ import {
   query,
   where,
   getDocs,
+  orderBy,
 } from "firebase/firestore";
 import { TailSpin, ThreeDots } from "react-loader-spinner";
 import Swal from "sweetalert2";
@@ -60,7 +61,7 @@ const Reviews = ({ id, prevRating, userRated }) => {
 
           Swal.fire({
             position: "center",
-            title: "Review Sent",
+            title: "Review Sent!",
             icon: "success",
             timer: 2000,
           });
@@ -82,9 +83,15 @@ const Reviews = ({ id, prevRating, userRated }) => {
   useEffect(() => {
     async function getData() {
       setReviewsLoading(true);
+
       setData([]);
 
-      let quer = query(reviewsRef, where("movieid", "==", id));
+      let quer = query(
+        reviewsRef,
+        where("movieid", "==", id),
+        orderBy("rating", "desc")
+      );
+
       const querySnapshot = await getDocs(quer);
 
       querySnapshot.forEach((doc) => {
@@ -120,7 +127,7 @@ const Reviews = ({ id, prevRating, userRated }) => {
 
       {reviewsLoading ? (
         <div className="mt-6 flex justify-center">
-          <ThreeDots height={10} color="white" />
+          <ThreeDots height={12} color="white" />
         </div>
       ) : (
         <div className="mt-4">
@@ -136,6 +143,7 @@ const Reviews = ({ id, prevRating, userRated }) => {
                     ({new Date(e.timestamp).toLocaleString()})
                   </p>
                 </div>
+
                 <ReactStars
                   size={15}
                   half={true}
